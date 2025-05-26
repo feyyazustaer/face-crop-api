@@ -23,7 +23,6 @@ def detect_face(img):
     faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
     if len(faces) == 0:
         return None
-    # En büyük yüzü al (yakın olanı)
     return sorted(faces, key=lambda b: b[2] * b[3], reverse=True)[0]
 
 def crop_centered(img, x, y, w, h, crop_width=600, crop_height=800):
@@ -33,12 +32,10 @@ def crop_centered(img, x, y, w, h, crop_width=600, crop_height=800):
     start_x = max(0, face_center_x - crop_width // 2)
     start_y = max(0, face_center_y - crop_height // 2)
 
-    # Resim sınırlarını aşma
     end_x = min(start_x + crop_width, img.shape[1])
     end_y = min(start_y + crop_height, img.shape[0])
     crop = img[start_y:end_y, start_x:end_x]
 
-    # Gerekirse yeniden boyutlandır
     crop_resized = cv2.resize(crop, (crop_width, crop_height))
     return crop_resized
 
@@ -64,4 +61,5 @@ def crop_image():
     return send_file(temp_file.name, mimetype='image/jpeg')
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
