@@ -61,7 +61,8 @@ def merge_faces():
     if img1 is None or img2 is None:
         return "One or both faces could not be processed", 400
 
-    combined = np.hstack((img1, img2))
+    separator = np.full((800, 3, 3), 255, dtype=np.uint8)  # 3px genişliğinde beyaz şerit
+    combined = np.hstack((img1, separator, img2))
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
     cv2.imwrite(temp_file.name, combined)
     return send_file(temp_file.name, mimetype='image/jpeg')
